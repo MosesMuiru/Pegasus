@@ -7,13 +7,12 @@
 # General application configuration
 import Config
 
-
 maybe_ipv6 = if System.get_env("ECTO_IPV6"), do: [:inet6], else: []
 
-database_url =
-    System.get_env("HOSTNAME")
+database_url = System.get_env("HOSTNAME")
 
-database_ca_cert_filepath = System.get_env("DATABASE_CA_CERT_FILEPATH") || "/etc/ssl/certs/ca-certificates.crt"
+database_ca_cert_filepath =
+  System.get_env("DATABASE_CA_CERT_FILEPATH") || "/etc/ssl/certs/ca-certificates.crt"
 
 config :payment, Payment.Repo,
   username: "MosesMuiru",
@@ -25,7 +24,6 @@ config :payment, Payment.Repo,
     server_name_indication: to_charlist(database_url),
     verify: :verify_none
   ]
-
 
 config :payment,
   ecto_repos: [Payment.Repo],
@@ -75,8 +73,13 @@ config :tailwind,
 
 # Configures Elixir's Logger
 config :logger, :console,
+  compile_time_purge_matching: [
+    [level_lower_than: :info]
+  ],
   format: "$time $metadata[$level] $message\n",
-  metadata: [:request_id]
+  metadata: [:request_id],
+  handle_otp_reports: true,
+  handle_sasl_reports: true
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
